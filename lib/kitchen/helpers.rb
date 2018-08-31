@@ -61,7 +61,7 @@ X8N2N9ZNnORJqK374yGj1jWUU66mQhPvn49QpG8P2HEoh2RQjNvyHA==
 
     def data_dockerfile
       <<-EOF
-FROM #{data_image_registry}/centos:7
+FROM #{config[:data_image_registry]}/centos:7
 MAINTAINER Sean OMeara \"sean@sean.io\"
 ENV LANG en_US.UTF-8
 #{Array(config[:data_intermediate_instructions]).each do |instruction|
@@ -97,6 +97,8 @@ VOLUME /opt/verifier
       File.write("#{tmpdir}/dokken/Dockerfile", data_dockerfile)
       File.write("#{tmpdir}/dokken/authorized_keys", insecure_ssh_public_key)
 
+      debug 'driver - building data_image'
+      debug data_dockerfile
       i = ::Docker::Image.build_from_dir(
         "#{tmpdir}/dokken",
         'nocache' => true,
